@@ -16,6 +16,8 @@ export default function NuevaTareaScreen() {
   const { addTask } = useContext(TaskContext);
   const { activeTheme } = useContext(ThemeContext);
   const navigation = useNavigation();
+    const isDark = activeTheme === 'dark';
+
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -51,30 +53,32 @@ export default function NuevaTareaScreen() {
       style={tw`flex-1 ${activeTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}
       contentContainerStyle={tw`p-4`}
     >
-      <View style={tw`bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md`}>
+      <View style={{...tw`p-5 rounded-2xl shadow-md`,
+            background: `${isDark ? 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)' : 'bg-white'}`,
+            backgroundColor: `${isDark ? '#f59e42' : '#ffffff'}`,}}>
         {/* Título */}
-        <Text style={tw`text-base font-semibold text-gray-800 dark:text-white mb-1`}>Título</Text>
+        <Text style={tw`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'} mb-1`}>Título</Text>
         <TextInput
           placeholder="Título de la tarea"
           placeholderTextColor={activeTheme === 'dark' ? '#ccc' : '#888'}
-          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 mb-4`}
+          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 text-sm text-gray-900 dark:text-white ${isDark ? 'bg-gray-800 text-white' : 'bg-gray-50'} mb-4`}
           value={title}
           onChangeText={setTitle}
         />
 
         {/* Descripción */}
-        <Text style={tw`text-base font-semibold text-gray-800 dark:text-white mb-1`}>Descripción</Text>
+        <Text style={tw`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'} mb-1`}>Descripción</Text>
         <TextInput
           placeholder="Descripción"
           placeholderTextColor={activeTheme === 'dark' ? '#ccc' : '#888'}
           multiline
-          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 h-28 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 mb-4`}
+          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 h-28 text-sm text-gray-900 dark:text-white ${isDark ? 'bg-gray-800 text-white' : 'bg-gray-50'} mb-4`}
           value={description}
           onChangeText={setDescription}
         />
 
         {/* Prioridad */}
-        <Text style={tw`text-base font-semibold text-gray-800 dark:text-white mb-2`}>Prioridad</Text>
+        <Text style={tw`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'} mb-2`}>Prioridad</Text>
         <View style={tw`flex-row justify-around mb-6`}>
           {priorityOptions.map((option) => (
             <TouchableOpacity
@@ -93,7 +97,9 @@ export default function NuevaTareaScreen() {
 
         {/* Botón guardar */}
         <TouchableOpacity
-          style={tw`bg-green-600 p-4 rounded-full items-center shadow-md`}
+          style={{...tw` p-4 rounded-full items-center shadow-md bg-green-500`,
+            background: `${isDark ? 'bg-green-500' : 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)'}`,
+            backgroundColor: `${isDark ? '#22C55E' : '#f59e42'}`,}}
           onPress={handleGuardar}
         >
           <Text style={tw`text-white font-bold text-base`}>Guardar Tarea</Text>

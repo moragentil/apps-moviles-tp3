@@ -15,6 +15,8 @@ export default function HomeScreen() {
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
 
+    const isDark = activeTheme === 'dark';
+
   const [filtroPrioridad, setFiltroPrioridad] = useState('todas');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
@@ -45,19 +47,19 @@ export default function HomeScreen() {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={tw`p-4 mb-3 rounded-2xl shadow-md bg-white dark:bg-gray-800`}
+      style={tw`p-4 mb-3 rounded-2xl shadow-md ${isDark ? 'bg-gray-700' : 'bg-white'}`}
       onPress={() => navigation.navigate('DetalleTarea', { task: item })}
     >
       {/* Título y fecha en la misma línea */}
       <View style={tw`flex-row justify-between items-center`}>
-        <Text style={tw`text-lg font-bold text-gray-900 dark:text-white flex-shrink`}>
+        <Text style={tw`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'} flex-shrink`}>
           {item.title}
         </Text>
-        <Text style={tw`text-xs text-gray-500 dark:text-gray-400 ml-2`}>
+        <Text style={tw`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ml-2`}>
           {item.createdAt ? new Date(item.createdAt).toLocaleString() : ''}
         </Text>
       </View>
-      <Text style={tw`text-gray-800 dark:text-gray-300`}>{item.description}</Text>
+      <Text style={tw`${isDark ? 'text-gray-300' : 'text-gray-800'}`}>{item.description}</Text>
       {/* Línea de prioridad y estado */}
       <View style={tw`flex-row justify-between items-center mt-3`}>
         {/* Prioridad */}
@@ -99,11 +101,11 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={tw`flex-row items-center justify-between py-4 px-4 mb-10`}>
         <ThemeSwitch />
-        <Text style={tw`text-xl font-bold text-gray-900 dark:text-white text-center flex-1 -ml-8`}>
+        <Text style={tw`text-xl font-bold text-gray-900 ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
           Mis Tareas
         </Text>
         <TouchableOpacity onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="red" />
+          <Ionicons name="log-out-outline" size={24} color="#f59e42" />
         </TouchableOpacity>
       </View>
 
@@ -122,7 +124,9 @@ export default function HomeScreen() {
       {/* Botón para mostrar filtros */}
       <View style={tw`px-4 mb-2`}>
         <TouchableOpacity
-          style={tw`self-end bg-blue-600 px-4 py-2 rounded-full shadow-md`}
+          style={{...tw`self-end px-4 py-2 rounded-full shadow-md`, 
+            background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+              backgroundColor: '#f59e42',}}
           onPress={() => setMostrarFiltros(!mostrarFiltros)}
         >
           <Text style={tw`text-white font-semibold`}>{mostrarFiltros ? 'Ocultar filtros' : 'Aplicar filtros'}</Text>
@@ -196,12 +200,16 @@ export default function HomeScreen() {
         ListEmptyComponent={
           <Text style={tw`text-gray-500 dark:text-gray-400 px-4`}>No hay tareas aún.</Text>
         }
-        contentContainerStyle={tw`px-4`}
+        contentContainerStyle={tw`px-4 `}
       />
 
       {/* Botón Nueva Tarea */}
       <TouchableOpacity
-        style={tw`bg-blue-600 p-4 mb-8 rounded-full items-center mt-4 mx-4 shadow-md`}
+        style={{
+            ...tw`bg-blue-600 p-4 mb-8 rounded-full items-center mt-4 mx-4 shadow-md`,
+            background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+            backgroundColor: '#f59e42',
+          }}
         onPress={() => navigation.navigate('NuevaTarea')}
       >
         <Text style={tw`text-white text-base font-bold`}>+ Nueva Tarea</Text>

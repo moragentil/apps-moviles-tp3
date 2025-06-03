@@ -15,6 +15,8 @@ export default function DetalleTareaScreen() {
   const route = useRoute();
 
   const { task } = route.params;
+    const isDark = activeTheme === 'dark';
+
 
   const [description, setDescription] = useState(task.description);
   const [completed, setCompleted] = useState(task.completed);
@@ -73,12 +75,16 @@ export default function DetalleTareaScreen() {
       contentContainerStyle={tw`flex-grow p-4 justify-between`}
     >
       {/* Tarjeta principal, ahora solo hasta antes de los botones */}
-      <View style={tw`bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md flex-1`}>
+      <View style={{...tw`bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md flex-1`,
+        background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+            backgroundColor: '#f59e42',
+            opacity: 0.95,
+      }}>
         <Text style={tw`text-2xl font-bold text-gray-900 dark:text-white mb-2`}>
           {task.title}
         </Text>
         {/* Fecha de creación */}
-        <Text style={tw`text-xs text-gray-500 dark:text-gray-400 mb-2`}>
+        <Text style={tw`text-xs text-white dark:text-gray-400 mb-2`}>
           Creada: {task.createdAt ? new Date(task.createdAt).toLocaleString() : 'Sin fecha'}
         </Text>
 
@@ -91,7 +97,7 @@ export default function DetalleTareaScreen() {
               style={tw`px-4 py-2 rounded-full ${priority === option.value ? option.color : 'bg-gray-200 dark:bg-gray-700'}`}
               onPress={() => setPriority(option.value)}
             >
-              <Text style={tw`text-white font-bold`}>
+              <Text style={tw`text-gray-600 font-bold`}>
                 {option.label}
               </Text>
             </TouchableOpacity>
@@ -104,7 +110,7 @@ export default function DetalleTareaScreen() {
           multiline
           placeholder="Escribe una descripción..."
           placeholderTextColor={activeTheme === 'dark' ? '#ccc' : '#888'}
-          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 h-28 text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 text-sm mb-4`}
+          style={tw`border border-gray-300 dark:border-gray-600 rounded-xl p-3 h-28 text-gray-900 dark:text-white ${isDark ? 'bg-gray-800 text-white' : 'bg-gray-50'} text-sm mb-4`}
           value={description}
           onChangeText={setDescription}
         />
@@ -114,7 +120,7 @@ export default function DetalleTareaScreen() {
           <Text style={tw`text-base font-semibold text-gray-700 dark:text-gray-300`}>
             Estado:
           </Text>
-          <Text style={tw`ml-2 text-base font-semibold ${completed ? 'text-green-600' : 'text-yellow-500'}`}>
+          <Text style={tw`ml-2 text-base font-semibold ${completed ? 'text-green-600' : 'text-red-500'}`}>
             {completed ? 'Completada' : 'Pendiente'}
           </Text>
         </View>
