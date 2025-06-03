@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { TaskContext } from '../context/TaskContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import tw from '../utils/tailwind';
-import axios from 'axios';
 import ThemeSwitch from '../components/ThemeSwitch';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -15,31 +14,20 @@ export default function HomeScreen() {
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
 
-    const isDark = activeTheme === 'dark';
+  const isDark = activeTheme === 'dark';
 
+  // Tabs: pendientes o completadas
+  const [tab, setTab] = useState('pendientes');
+  // Filtro de prioridad
   const [filtroPrioridad, setFiltroPrioridad] = useState('todas');
-  const [filtroEstado, setFiltroEstado] = useState('todos');
+  // Mostrar/ocultar filtros
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [sugerencia, setSugerencia] = useState('');
-  const [loadingSugerencia, setLoadingSugerencia] = useState(false);
 
-/*   useEffect(() => {
-    setLoadingSugerencia(true);
-    axios
-      .get('https://api.adviceslip.com/advice')
-      .then(res => setSugerencia(res.data.slip.advice))
-      .catch(() => setSugerencia('No se pudo obtener sugerencia'))
-      .finally(() => setLoadingSugerencia(false));
-  }, []); */
-
-  const tareasFiltradas = tasks.filter((t) => {
-    const porPrioridad = filtroPrioridad === 'todas' || t.priority === filtroPrioridad;
-    const porEstado =
-      filtroEstado === 'todos' ||
-      (filtroEstado === 'completadas' && t.completed) ||
-      (filtroEstado === 'pendientes' && !t.completed);
-    return porPrioridad && porEstado;
-  });
+  // Filtra tareas según el tab y la prioridad
+  const tareasFiltradas = tasks.filter((t) =>
+    (tab === 'pendientes' ? !t.completed : t.completed) &&
+    (filtroPrioridad === 'todas' ? true : t.priority === filtroPrioridad)
+  );
 
   const handleLogout = () => {
     logout();
@@ -97,11 +85,11 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={tw`flex-1 ${activeTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <View style={tw`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
       <View style={tw`flex-row mt-16 items-center justify-between py-4 px-4 mb-10`}>
         <ThemeSwitch />
-        <Text style={tw`text-xl font-bold text-gray-900 ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
+        <Text style={tw`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
           Mis Tareas
         </Text>
         <TouchableOpacity onPress={handleLogout}>
@@ -109,48 +97,42 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      
-      {/* <View style={tw`mb-4 px-4`}>
-        <Text style={tw`text-base font-bold text-blue-700 dark:text-blue-300 mb-1`}>
-          Sugerencia de organización:
-        </Text>
-        {loadingSugerencia ? (
-          <ActivityIndicator color="#2563eb" />
-        ) : (
-          <Text style={tw`italic text-gray-700 dark:text-gray-300`}>{sugerencia}</Text>
-        )}
-      </View> */}
-
-      {/* Botón para mostrar filtros */}
+      {/* Botón aplicar filtros */}
       <View style={tw`px-4 mb-2`}>
         <TouchableOpacity
-          style={{...tw`self-end px-4 py-2 rounded-full shadow-md`, 
-            background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
-              backgroundColor: '#f59e42',}}
+          style={[
+            tw`self-end px-4 py-2 rounded-full shadow-md`,
+            { backgroundColor: 'transparent' },
+          ]}
           onPress={() => setMostrarFiltros(!mostrarFiltros)}
         >
-          <Text style={tw`text-white font-semibold`}>{mostrarFiltros ? 'Ocultar filtros' : 'Aplicar filtros'}</Text>
+          <View
+            style={{
+              ...tw`absolute left-0 right-0 top-0 bottom-0 rounded-full`,
+              background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+              backgroundColor: '#f59e42',
+              opacity: 0.95,
+              zIndex: -1,
+            }}
+          />
+          <Text style={tw`text-white font-semibold z-10`}>
+            {mostrarFiltros ? 'Ocultar filtros' : 'Aplicar filtros'}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Filtros condicionales */}
+      {/* Filtro de prioridad */}
       {mostrarFiltros && (
-        <View
-          style={tw`${isDark ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-200'} rounded-xl mx-4 mb-4 p-3 shadow-md`}
-        >
+        <View style={tw`${isDark ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-200'} rounded-xl mx-4 mb-4 p-3 shadow-md`}>
           <Text style={tw`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Filtrar por prioridad:</Text>
-          <View style={tw`flex-row justify-between mb-3`}>
+          <View style={tw`flex-row justify-between`}>
             {['todas', 'baja', 'media', 'alta'].map((nivel) => (
               <TouchableOpacity
                 key={nivel}
                 style={[
                   tw`px-3 py-2 rounded-full border`,
                   filtroPrioridad === nivel
-                    ? { 
-                        ...tw`border-0`, 
-                        backgroundColor: '#f59e42',
-                        // Simula gradiente con fallback sólido, para gradiente real usar react-native-linear-gradient
-                      }
+                    ? { backgroundColor: '#f59e42', borderColor: '#f59e42' }
                     : isDark
                     ? tw`border-gray-800 bg-gray-900`
                     : tw`border-gray-200 bg-white`
@@ -171,45 +153,42 @@ export default function HomeScreen() {
               </TouchableOpacity>
             ))}
           </View>
-
-          <Text style={tw`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Filtrar por estado:</Text>
-          <View style={tw`flex-row justify-between`}>
-            {[
-              { label: 'Todos', value: 'todos' },
-              { label: 'Pendientes', value: 'pendientes' },
-              { label: 'Completadas', value: 'completadas' },
-            ].map((estado) => (
-              <TouchableOpacity
-                key={estado.value}
-                style={[
-                  tw`px-3 py-2 rounded-full border`,
-                  filtroEstado === estado.value
-                    ? { 
-                        ...tw`border-0`, 
-                        backgroundColor: '#f59e42',
-                      }
-                    : isDark
-                    ? tw`border-gray-800 bg-gray-900`
-                    : tw`border-gray-200 bg-white`
-                ]}
-                onPress={() => setFiltroEstado(estado.value)}
-              >
-                <Text
-                  style={tw`${
-                    filtroEstado === estado.value
-                      ? 'text-white font-bold'
-                      : isDark
-                      ? 'text-gray-200'
-                      : 'text-gray-800'
-                  }`}
-                >
-                  {estado.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
         </View>
       )}
+
+      {/* Tabs */}
+      <View style={tw`flex-row mx-4 mb-4`}>
+        <TouchableOpacity
+          style={[
+            tw`flex-1 py-3 rounded-l-full items-center border`,
+            tab === 'pendientes'
+              ? { backgroundColor: '#f59e42', borderColor: '#f59e42' }
+              : isDark
+              ? tw`bg-gray-900 border-gray-800`
+              : tw`bg-white border-gray-200`
+          ]}
+          onPress={() => setTab('pendientes')}
+        >
+          <Text style={tw`${tab === 'pendientes' ? 'text-white font-bold' : isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+            Pendientes
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            tw`flex-1 py-3 rounded-r-full items-center border`,
+            tab === 'completadas'
+              ? { backgroundColor: '#f59e42', borderColor: '#f59e42' }
+              : isDark
+              ? tw`bg-gray-900 border-gray-800`
+              : tw`bg-white border-gray-200`
+          ]}
+          onPress={() => setTab('completadas')}
+        >
+          <Text style={tw`${tab === 'completadas' ? 'text-white font-bold' : isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+            Completadas
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Lista de Tareas */}
       <FlatList
@@ -219,16 +198,16 @@ export default function HomeScreen() {
         ListEmptyComponent={
           <Text style={tw`text-gray-500 dark:text-gray-400 px-4`}>No hay tareas aún.</Text>
         }
-        contentContainerStyle={tw`px-4 `}
+        contentContainerStyle={tw`px-4`}
       />
 
       {/* Botón Nueva Tarea */}
       <TouchableOpacity
         style={{
-            ...tw`bg-blue-600 p-4 mb-8 rounded-full items-center mt-4 mx-4 shadow-md`,
-            background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
-            backgroundColor: '#f59e42',
-          }}
+          ...tw`bg-blue-600 p-4 mb-8 rounded-full items-center mt-4 mx-4 shadow-md`,
+          background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+          backgroundColor: '#f59e42',
+        }}
         onPress={() => navigation.navigate('NuevaTarea')}
       >
         <Text style={tw`text-white text-base font-bold`}>+ Nueva Tarea</Text>
