@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { TaskContext } from '../context/TaskContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
@@ -7,9 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import tw from '../utils/tailwind';
 import ThemeSwitch from '../components/ThemeSwitch';
 import { Ionicons } from '@expo/vector-icons';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function HomeScreen() {
-  const { tasks } = useContext(TaskContext);
+  const { tasks, deleteTask } = useContext(TaskContext);
   const { activeTheme } = useContext(ThemeContext);
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -33,55 +34,78 @@ export default function HomeScreen() {
     logout();
   };
 
+  const handleDelete = (id) => {
+    Alert.alert(
+      'Eliminar tarea',
+      '¿Estás seguro de que deseas eliminar esta tarea?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Eliminar', style: 'destructive', onPress: () => deleteTask(id) },
+      ]
+    );
+  };
+
+  const renderRightActions = (item) => (
+    <View style={tw`flex-1 justify-center items-end pr-4`}>
+      <Text style={tw`text-red-600 font-bold`}>Eliminar</Text>
+    </View>
+  );
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={tw`p-4 mb-3 rounded-2xl shadow-md ${isDark ? 'bg-gray-700' : 'bg-white'}`}
-      onPress={() => navigation.navigate('DetalleTarea', { task: item })}
+    <Swipeable
+      renderRightActions={() => renderRightActions(item)}
+      onSwipeableOpen={() => handleDelete(item.id)}
+      rightThreshold={60}
     >
-      {/* Título y fecha en la misma línea */}
-      <View style={tw`flex-row justify-between items-center`}>
-        <Text style={tw`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'} flex-shrink`}>
-          {item.title}
-        </Text>
-        <Text style={tw`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ml-2`}>
-          {item.createdAt ? new Date(item.createdAt).toLocaleString() : ''}
-        </Text>
-      </View>
-      <Text style={tw`${isDark ? 'text-gray-300' : 'text-gray-800'}`}>{item.description}</Text>
-      {/* Línea de prioridad y estado */}
-      <View style={tw`flex-row justify-between items-center mt-3`}>
-        {/* Prioridad */}
-        <View
-          style={tw`px-3 py-1 rounded-full ${
-            item.priority === 'alta'
-              ? 'bg-red-200'
-              : item.priority === 'media'
-              ? 'bg-yellow-200'
-              : 'bg-green-200'
-          }`}
-        >
-          <Text
-            style={tw`text-xs font-bold ${
-              item.priority === 'alta'
-                ? 'text-red-700'
-                : item.priority === 'media'
-                ? 'text-yellow-700'
-                : 'text-green-700'
-            }`}
-          >
-            {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}
+      <TouchableOpacity
+        style={tw`p-4 mb-3 rounded-2xl shadow-md ${isDark ? 'bg-gray-700' : 'bg-white'}`}
+        onPress={() => navigation.navigate('DetalleTarea', { task: item })}
+      >
+        {/* Título y fecha en la misma línea */}
+        <View style={tw`flex-row justify-between items-center`}>
+          <Text style={tw`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'} flex-shrink`}>
+            {item.title}
+          </Text>
+          <Text style={tw`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ml-2`}>
+            {item.createdAt ? new Date(item.createdAt).toLocaleString() : ''}
           </Text>
         </View>
-        {/* Estado */}
-        <Text
-          style={tw`text-xs font-bold ${
-            item.completed ? 'text-green-600' : 'text-red-600'
-          }`}
-        >
-          {item.completed ? 'Completada' : 'Pendiente'}
-        </Text>
-      </View>
-    </TouchableOpacity>
+        <Text style={tw`${isDark ? 'text-gray-300' : 'text-gray-800'}`}>{item.description}</Text>
+        {/* Línea de prioridad y estado */}
+        <View style={tw`flex-row justify-between items-center mt-3`}>
+          {/* Prioridad */}
+          <View
+            style={tw`px-3 py-1 rounded-full ${
+              item.priority === 'alta'
+                ? 'bg-red-200'
+                : item.priority === 'media'
+                ? 'bg-yellow-200'
+                : 'bg-green-200'
+            }`}
+          >
+            <Text
+              style={tw`text-xs font-bold ${
+                item.priority === 'alta'
+                  ? 'text-red-700'
+                  : item.priority === 'media'
+                  ? 'text-yellow-700'
+                  : 'text-green-700'
+              }`}
+            >
+              {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}
+            </Text>
+          </View>
+          {/* Estado */}
+          <Text
+            style={tw`text-xs font-bold ${
+              item.completed ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            {item.completed ? 'Completada' : 'Pendiente'}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   );
 
   return (
