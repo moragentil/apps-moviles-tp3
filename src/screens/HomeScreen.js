@@ -135,24 +135,35 @@ export default function HomeScreen() {
 
       {/* Filtros condicionales */}
       {mostrarFiltros && (
-        <View style={tw`bg-white dark:bg-gray-800 rounded-xl mx-4 mb-4 p-3 shadow-md`}>
-          <Text style={tw`text-base font-semibold mb-2 text-gray-800 dark:text-white`}>Filtrar por prioridad:</Text>
+        <View
+          style={tw`${isDark ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-200'} rounded-xl mx-4 mb-4 p-3 shadow-md`}
+        >
+          <Text style={tw`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Filtrar por prioridad:</Text>
           <View style={tw`flex-row justify-between mb-3`}>
             {['todas', 'baja', 'media', 'alta'].map((nivel) => (
               <TouchableOpacity
                 key={nivel}
-                style={tw`px-3 py-2 rounded-full border ${
+                style={[
+                  tw`px-3 py-2 rounded-full border`,
                   filtroPrioridad === nivel
-                    ? 'bg-blue-600 border-blue-600'
-                    : 'border-gray-300 bg-gray-100 dark:bg-gray-700'
-                }`}
+                    ? { 
+                        ...tw`border-0`, 
+                        backgroundColor: '#f59e42',
+                        // Simula gradiente con fallback sólido, para gradiente real usar react-native-linear-gradient
+                      }
+                    : isDark
+                    ? tw`border-gray-800 bg-gray-900`
+                    : tw`border-gray-200 bg-white`
+                ]}
                 onPress={() => setFiltroPrioridad(nivel)}
               >
                 <Text
                   style={tw`${
                     filtroPrioridad === nivel
                       ? 'text-white font-bold'
-                      : 'text-gray-800 dark:text-gray-200'
+                      : isDark
+                      ? 'text-gray-200'
+                      : 'text-gray-800'
                   }`}
                 >
                   {nivel === 'todas' ? 'Todas' : nivel.charAt(0).toUpperCase() + nivel.slice(1)}
@@ -161,7 +172,7 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          <Text style={tw`text-base font-semibold mb-2 text-gray-800 dark:text-white`}>Filtrar por estado:</Text>
+          <Text style={tw`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Filtrar por estado:</Text>
           <View style={tw`flex-row justify-between`}>
             {[
               { label: 'Todos', value: 'todos' },
@@ -170,18 +181,26 @@ export default function HomeScreen() {
             ].map((estado) => (
               <TouchableOpacity
                 key={estado.value}
-                style={tw`px-3 py-2 rounded-full border ${
+                style={[
+                  tw`px-3 py-2 rounded-full border`,
                   filtroEstado === estado.value
-                    ? 'bg-blue-600 border-blue-600'
-                    : 'border-gray-300 bg-gray-100 dark:bg-gray-700'
-                }`}
+                    ? { 
+                        ...tw`border-0`, 
+                        backgroundColor: '#f59e42',
+                      }
+                    : isDark
+                    ? tw`border-gray-800 bg-gray-900`
+                    : tw`border-gray-200 bg-white`
+                ]}
                 onPress={() => setFiltroEstado(estado.value)}
               >
                 <Text
                   style={tw`${
                     filtroEstado === estado.value
                       ? 'text-white font-bold'
-                      : 'text-gray-800 dark:text-gray-200'
+                      : isDark
+                      ? 'text-gray-200'
+                      : 'text-gray-800'
                   }`}
                 >
                   {estado.label}
