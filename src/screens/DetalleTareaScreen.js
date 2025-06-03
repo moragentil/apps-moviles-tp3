@@ -87,12 +87,13 @@ export default function DetalleTareaScreen() {
       </View>
 
       {/* Tarjeta principal, ahora solo hasta antes de los botones */}
-      <View style={{...tw`bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md flex-1`,
-        background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
-            backgroundColor: '#f59e42',
+      <View style={{...tw`bg-white dark:bg-gray-800 p-5 border-[#f59e42] border-4 rounded-2xl shadow-md flex-1`,
+        backgroundColor: `${isDark ? '#1f2937' : '#ffffff'}`,
+        border: 2,
+            borderColor: '#f59e42',
             opacity: 0.95,
       }}>
-        <Text style={tw`text-2xl font-bold text-gray-900 dark:text-white mb-2`}>
+        <Text style={tw`text-2xl font-bold ${isDark ? 'text-white' : 'text-black'} mb-2`}>
           {task.title}
         </Text>
         {/* Fecha de creación */}
@@ -101,7 +102,7 @@ export default function DetalleTareaScreen() {
         </Text>
 
         {/* Prioridad Visual */}
-        <Text style={tw`text-base font-semibold text-gray-700 dark:text-gray-300 mb-2`}>Prioridad</Text>
+        <Text style={tw`text-base font-semibold ${isDark ? 'text-gray-300' : 'text-black'} mb-2`}>Prioridad</Text>
         <View style={tw`flex-row justify-around mb-4`}>
           {priorityOptions.map((option) => (
             <TouchableOpacity
@@ -117,7 +118,7 @@ export default function DetalleTareaScreen() {
         </View>
 
         {/* Descripción */}
-        <Text style={tw`text-base font-semibold text-gray-700 dark:text-gray-300 mb-1`}>Descripción</Text>
+        <Text style={tw`text-base font-semibold ${isDark ? 'text-gray-300' : 'text-black'} mb-1`}>Descripción</Text>
         <TextInput
           multiline
           placeholder="Escribe una descripción..."
@@ -129,7 +130,7 @@ export default function DetalleTareaScreen() {
 
         {/* Estado */}
         <View style={tw`flex-row items-center mb-10`}>
-          <Text style={tw`text-base font-semibold text-gray-700 dark:text-gray-300`}>
+          <Text style={tw`text-base font-semibold ${isDark ? 'text-gray-300' : 'text-black'} `}>
             Estado:
           </Text>
           <Text style={tw`ml-2 text-base font-semibold ${completed ? 'text-green-600' : 'text-red-500'}`}>

@@ -66,9 +66,12 @@ export default function NuevaTareaScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={{...tw`p-5 rounded-2xl shadow-md`,
-            background: `${isDark ? 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)' : 'bg-white'}`,
-            backgroundColor: `${isDark ? '#f59e42' : '#ffffff'}`,}}>
+      <View style={{...tw`bg-white dark:bg-gray-800 p-5 border-[#f59e42] border-4 rounded-2xl shadow-md flex-1`,
+        backgroundColor: `${isDark ? '#1f2937' : '#ffffff'}`,
+        border: 2,
+            borderColor: '#f59e42',
+            opacity: 0.95,
+      }}>
         {/* Título */}
         <Text style={tw`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'} mb-1`}>Título</Text>
         <TextInput
@@ -111,8 +114,8 @@ export default function NuevaTareaScreen() {
         {/* Botón guardar */}
         <TouchableOpacity
           style={{...tw` p-4 rounded-full items-center shadow-md bg-green-500`,
-            background: `${isDark ? 'bg-green-500' : 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)'}`,
-            backgroundColor: `${isDark ? '#22C55E' : '#f59e42'}`,}}
+            background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
+            backgroundColor: '#f59e42'}}
           onPress={handleGuardar}
         >
           <Text style={tw`text-white font-bold text-base`}>Guardar Tarea</Text>
