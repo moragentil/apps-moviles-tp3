@@ -7,6 +7,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import tw from '../utils/tailwind';
 import { Ionicons } from '@expo/vector-icons';
+import BackButton from '../components/BackButton';
 
 export default function DetalleTareaScreen() {
   const { updateTask, deleteTask } = useContext(TaskContext);
@@ -74,6 +75,17 @@ export default function DetalleTareaScreen() {
       style={tw`flex-1 ${activeTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}
       contentContainerStyle={tw`flex-grow p-4 justify-between`}
     >
+      {/* Header personalizado */}
+      <View style={tw`flex-row items-center mt-10 justify-between py-4 px-2 mb-4`}>
+        <BackButton color="#f59e42" />
+        <Text style={tw`text-xl font-bold text-center flex-1 -ml-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Detalle de Tarea
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Ionicons name="log-out-outline" size={24} color="#f59e42" onPress={() => navigation.reset({index: 0, routes: [{name: 'Login'}]})} />
+        </TouchableOpacity>
+      </View>
+
       {/* Tarjeta principal, ahora solo hasta antes de los botones */}
       <View style={{...tw`bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md flex-1`,
         background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',

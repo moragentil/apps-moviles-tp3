@@ -99,7 +99,7 @@ export default function HomeScreen() {
   return (
     <View style={tw`flex-1 ${activeTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
-      <View style={tw`flex-row items-center justify-between py-4 px-4 mb-10`}>
+      <View style={tw`flex-row mt-16 items-center justify-between py-4 px-4 mb-10`}>
         <ThemeSwitch />
         <Text style={tw`text-xl font-bold text-gray-900 ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
           Mis Tareas

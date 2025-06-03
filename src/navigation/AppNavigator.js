@@ -18,9 +18,9 @@ export default function AppNavigator() {
       <Stack.Navigator>
         {user ? (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="NuevaTarea" component={NuevaTareaScreen} />
-            <Stack.Screen name="DetalleTarea" component={DetalleTareaScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="NuevaTarea" component={NuevaTareaScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="DetalleTarea" component={DetalleTareaScreen} options={{ headerShown: false }}/>
           </>
         ) : (
           <Stack.Screen

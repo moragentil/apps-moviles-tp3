@@ -11,6 +11,9 @@ import { TaskContext } from '../context/TaskContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import tw from '../utils/tailwind';
+import BackButton from '../components/BackButton';
+import { Ionicons } from '@expo/vector-icons';
+
 
 export default function NuevaTareaScreen() {
   const { addTask } = useContext(TaskContext);
@@ -53,6 +56,16 @@ export default function NuevaTareaScreen() {
       style={tw`flex-1 ${activeTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}
       contentContainerStyle={tw`p-4`}
     >
+    <View style={tw`flex-row items-center mt-10 justify-between py-4 px-2 mb-4`}>
+        <BackButton color="#f59e42" />
+        <Text style={tw`text-xl font-bold text-center flex-1 -ml-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Nueva Tarea
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Ionicons name="log-out-outline" size={24} color="#f59e42" onPress={() => navigation.reset({index: 0, routes: [{name: 'Login'}]})} />
+        </TouchableOpacity>
+      </View>
+
       <View style={{...tw`p-5 rounded-2xl shadow-md`,
             background: `${isDark ? 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)' : 'bg-white'}`,
             backgroundColor: `${isDark ? '#f59e42' : '#ffffff'}`,}}>
