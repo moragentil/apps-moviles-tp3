@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 
 export default function HomeScreen() {
-  const { tasks, deleteTask } = useContext(TaskContext);
+  const { tasks, deleteTask, updateTask } = useContext(TaskContext);
   const { activeTheme } = useContext(ThemeContext);
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -45,6 +45,20 @@ export default function HomeScreen() {
     );
   };
 
+  // Alternar completado SIN popup
+  const handleToggleCompleted = (item) => {
+    updateTask({ ...item, completed: !item.completed });
+  };
+
+  // Acciones al deslizar a la derecha (completar o marcar pendiente)
+  const renderLeftActions = (item) => (
+    <View style={tw`flex-1 justify-center items-start pl-4`}>
+      <Text style={tw`font-bold ${item.completed ? 'text-yellow-600' : 'text-green-600'}`}>
+        {item.completed ? 'Marcar como Pendiente' : 'Marcar como Completada'}
+      </Text>
+    </View>
+  );
+
   const renderRightActions = (item) => (
     <View style={tw`flex-1 justify-center items-end pr-4`}>
       <Text style={tw`text-red-600 font-bold`}>Eliminar</Text>
@@ -54,8 +68,11 @@ export default function HomeScreen() {
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={() => renderRightActions(item)}
-      onSwipeableOpen={() => handleDelete(item.id)}
+      onSwipeableRightOpen={() => handleDelete(item.id)}
       rightThreshold={60}
+      renderLeftActions={() => renderLeftActions(item)}
+      onSwipeableLeftOpen={() => handleToggleCompleted(item)}
+      leftThreshold={60}
     >
       <TouchableOpacity
         style={tw`p-4 mb-3 rounded-2xl shadow-md ${isDark ? 'bg-gray-700' : 'bg-white'}`}
