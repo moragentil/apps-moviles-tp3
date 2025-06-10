@@ -151,7 +151,7 @@ export default function HomeScreen() {
             }}
           />
           <Text style={tw`text-white font-semibold z-10`}>
-            {mostrarFiltros ? 'Ocultar filtros' : 'Aplicar filtros'}
+            <Ionicons name="funnel" size={20} color="#fff" />
           </Text>
         </TouchableOpacity>
       </View>
