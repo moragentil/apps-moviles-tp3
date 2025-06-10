@@ -8,6 +8,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import tw from '../utils/tailwind';
 import { Ionicons } from '@expo/vector-icons';
 import BackButton from '../components/BackButton';
+import LogoutButton from '../components/LogoutButton';
 
 export default function DetalleTareaScreen() {
   const { updateTask, deleteTask } = useContext(TaskContext);
@@ -81,9 +82,7 @@ export default function DetalleTareaScreen() {
         <Text style={tw`text-xl font-bold text-center flex-1 -ml-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Detalle de Tarea
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="log-out-outline" size={24} color="#f59e42" onPress={() => navigation.reset({index: 0, routes: [{name: 'Login'}]})} />
-        </TouchableOpacity>
+        <LogoutButton />
       </View>
 
       {/* Tarjeta principal, ahora solo hasta antes de los botones */}

@@ -8,11 +8,11 @@ import tw from '../utils/tailwind';
 import ThemeSwitch from '../components/ThemeSwitch';
 import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
+import LogoutButton from '../components/LogoutButton';
 
 export default function HomeScreen() {
   const { tasks, deleteTask, updateTask } = useContext(TaskContext);
   const { activeTheme } = useContext(ThemeContext);
-  const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const isDark = activeTheme === 'dark';
@@ -29,10 +29,6 @@ export default function HomeScreen() {
     (tab === 'pendientes' ? !t.completed : t.completed) &&
     (filtroPrioridad === 'todas' ? true : t.priority === filtroPrioridad)
   );
-
-  const handleLogout = () => {
-    logout();
-  };
 
   const handleDelete = (id) => {
     Alert.alert(
@@ -133,9 +129,7 @@ export default function HomeScreen() {
         <Text style={tw`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
           Mis Tareas
         </Text>
-        <TouchableOpacity onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="#f59e42" />
-        </TouchableOpacity>
+        <LogoutButton />
       </View>
 
       {/* Botón aplicar filtros */}

@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import tw from '../utils/tailwind';
 import BackButton from '../components/BackButton';
 import { Ionicons } from '@expo/vector-icons';
+import LogoutButton from '../components/LogoutButton';
 
 
 export default function NuevaTareaScreen() {
@@ -61,9 +62,7 @@ export default function NuevaTareaScreen() {
         <Text style={tw`text-xl font-bold text-center flex-1 -ml-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Nueva Tarea
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="log-out-outline" size={24} color="#f59e42" onPress={() => navigation.reset({index: 0, routes: [{name: 'Login'}]})} />
-        </TouchableOpacity>
+        <LogoutButton />
       </View>
 
       <View style={{...tw`bg-white dark:bg-gray-800 p-5 border-[#f59e42] border-4 rounded-2xl shadow-md flex-1`,
