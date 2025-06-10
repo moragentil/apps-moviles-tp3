@@ -124,7 +124,7 @@ export default function HomeScreen() {
   return (
     <View style={tw`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
-      <View style={tw`flex-row mt-16 items-center justify-between py-4 px-4 mb-10`}>
+      <View style={tw`flex-row mt-16 items-center justify-between py-4 px-4 mb-6`}>
         <ThemeSwitch />
         <Text style={tw`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} text-center flex-1 -ml-8`}>
           Mis Tareas
@@ -192,34 +192,44 @@ export default function HomeScreen() {
       )}
 
       {/* Tabs */}
-      <View style={tw`flex-row mx-4 mb-4`}>
+      <View style={tw`flex-row mx-4 mt-2 mb-4`}>
         <TouchableOpacity
           style={[
-            tw`flex-1 py-3 rounded-l-full items-center border`,
+            tw`flex-1 items-center pb-2`,
             tab === 'pendientes'
-              ? { backgroundColor: '#f59e42', borderColor: '#f59e42' }
-              : isDark
-              ? tw`bg-gray-900 border-gray-800`
-              : tw`bg-white border-gray-200`
+              ? { borderBottomWidth: 3, borderColor: '#f59e42' }
+              : { borderBottomWidth: 2, borderColor: isDark ? '#374151' : '#e5e7eb' }
           ]}
           onPress={() => setTab('pendientes')}
         >
-          <Text style={tw`${tab === 'pendientes' ? 'text-white font-bold' : isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+          <Text
+            style={[
+              tw`text-base font-bold`,
+              {
+                color: tab === 'pendientes' ? '#f59e42' : isDark ? '#d1d5db' : '#6b7280'
+              }
+            ]}
+          >
             Pendientes
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            tw`flex-1 py-3 rounded-r-full items-center border`,
+            tw`flex-1 items-center pb-2`,
             tab === 'completadas'
-              ? { backgroundColor: '#f59e42', borderColor: '#f59e42' }
-              : isDark
-              ? tw`bg-gray-900 border-gray-800`
-              : tw`bg-white border-gray-200`
+              ? { borderBottomWidth: 3, borderColor: '#f59e42' }
+              : { borderBottomWidth: 2, borderColor: isDark ? '#374151' : '#e5e7eb' }
           ]}
           onPress={() => setTab('completadas')}
         >
-          <Text style={tw`${tab === 'completadas' ? 'text-white font-bold' : isDark ? 'text-gray-200' : 'text-gray-800'}`}>
+          <Text
+            style={[
+              tw`text-base font-bold`,
+              {
+                color: tab === 'completadas' ? '#f59e42' : isDark ? '#d1d5db' : '#6b7280'
+              }
+            ]}
+          >
             Completadas
           </Text>
         </TouchableOpacity>
