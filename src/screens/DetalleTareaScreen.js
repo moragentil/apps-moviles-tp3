@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Alert, ScrollView
+  View, Text, TextInput, TouchableOpacity, Alert, ScrollView, Platform
 } from 'react-native';
 import { TaskContext } from '../context/TaskContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -9,6 +9,7 @@ import tw from '../utils/tailwind';
 import { Ionicons } from '@expo/vector-icons';
 import BackButton from '../components/BackButton';
 import LogoutButton from '../components/LogoutButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function DetalleTareaScreen() {
   const { updateTask, deleteTask } = useContext(TaskContext);
@@ -22,6 +23,14 @@ export default function DetalleTareaScreen() {
 
   const [description, setDescription] = useState(task.description);
   const [completed, setCompleted] = useState(task.completed);
+  const [dueDate, setDueDate] = useState(
+    task.dueDate && !isNaN(new Date(task.dueDate).getTime())
+      ? new Date(task.dueDate)
+      : null
+  );
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  // Prioridad como número
   const [priority, setPriority] = useState(task.priority);
   const [modified, setModified] = useState(false);
 
@@ -29,18 +38,26 @@ export default function DetalleTareaScreen() {
     setModified(
       description !== task.description ||
       completed !== task.completed ||
-      priority !== task.priority
+      priority !== task.priority ||
+      (dueDate ? dueDate.toISOString() : '') !== (task.dueDate || '')
     );
-  }, [description, completed, priority]);
+  }, [description, completed, priority, dueDate]);
 
   const handleSave = () => {
     if (description.trim() === '') {
       Alert.alert('Error', 'La descripción no puede estar vacía');
       return;
     }
-    updateTask({ ...task, description, completed, priority });
+    updateTask({
+      ...task,
+      description,
+      completed,
+      priority, 
+      dueDate: dueDate ? dueDate.toISOString() : '',
+    });
     Alert.alert('Guardado', 'Los cambios se guardaron correctamente');
     setModified(false);
+    navigation.navigate('Home'); 
   };
 
   const handleDelete = () => {
@@ -66,9 +83,9 @@ export default function DetalleTareaScreen() {
   };
 
   const priorityOptions = [
-    { label: 'Baja', value: 'baja', color: 'bg-green-400' },
-    { label: 'Media', value: 'media', color: 'bg-yellow-400' },
-    { label: 'Alta', value: 'alta', color: 'bg-red-400' },
+    { label: 'Baja', value: 3, color: 'bg-green-400' },
+    { label: 'Media', value: 2, color: 'bg-yellow-400' },
+    { label: 'Alta', value: 1, color: 'bg-red-400' },
   ];
 
   return (
@@ -85,12 +102,13 @@ export default function DetalleTareaScreen() {
         <LogoutButton />
       </View>
 
-      {/* Tarjeta principal, ahora solo hasta antes de los botones */}
-      <View style={{...tw`bg-white dark:bg-gray-800 p-5 border-[#f59e42] border-4 rounded-2xl shadow-md flex-1`,
+      {/* Tarjeta principal */}
+      <View style={{
+        ...tw`bg-white dark:bg-gray-800 p-5 border-[#f59e42] border-4 rounded-2xl shadow-md flex-1`,
         backgroundColor: `${isDark ? '#1f2937' : '#ffffff'}`,
         border: 2,
-            borderColor: '#f59e42',
-            opacity: 0.95,
+        borderColor: '#f59e42',
+        opacity: 0.95,
       }}>
         <Text style={tw`text-2xl font-bold ${isDark ? 'text-white' : 'text-black'} mb-2`}>
           {task.title}
@@ -109,7 +127,7 @@ export default function DetalleTareaScreen() {
               style={tw`px-4 py-2 rounded-full ${priority === option.value ? option.color : 'bg-gray-200 dark:bg-gray-700'}`}
               onPress={() => setPriority(option.value)}
             >
-              <Text style={tw`text-gray-600 font-bold`}>
+              <Text style={tw`text-white font-bold`}>
                 {option.label}
               </Text>
             </TouchableOpacity>

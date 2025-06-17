@@ -18,18 +18,12 @@ export default function HomeScreen() {
 
   const isDark = activeTheme === 'dark';
 
-  // Tabs: pendientes o completadas
   const [tab, setTab] = useState('pendientes');
-  // Filtro de prioridad
   const [filtroPrioridad, setFiltroPrioridad] = useState('todas');
-  // Mostrar/ocultar filtros
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  // Estado para ordenar tareas
   const [ordenando, setOrdenando] = useState(false);
 
-  // Ordena tareas por prioridad: alta (1), media (2), baja (3)
   const prioridadOrden = { alta: 1, media: 2, baja: 3 };
- // Eliminar toda la lógica de sort en tareasFiltradas
 const tareasFiltradas = tasks.filter((t) =>
   (tab === 'pendientes' ? !t.completed : t.completed) &&
   (filtroPrioridad === 'todas' ? true 
@@ -51,12 +45,10 @@ const tareasFiltradas = tasks.filter((t) =>
     );
   };
 
-  // Alternar completado SIN popup
   const handleToggleCompleted = (item) => {
     updateTask({ ...item, completed: !item.completed });
   };
 
-  // Acciones al deslizar a la derecha (completar o marcar pendiente)
   const renderLeftActions = (item) => (
     <View style={tw`flex-1 justify-center items-start pl-4`}>
       <Text style={tw`font-bold ${item.completed ? 'text-yellow-600' : 'text-green-600'}`}>
@@ -84,7 +76,6 @@ const tareasFiltradas = tasks.filter((t) =>
         style={tw`p-4 mb-3 rounded-2xl shadow-md ${isDark ? 'bg-gray-700' : 'bg-white'}`}
         onPress={() => navigation.navigate('DetalleTarea', { task: item })}
       >
-        {/* Título y fecha en la misma línea */}
         <View style={tw`flex-row justify-between items-center`}>
           <Text style={tw`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'} flex-shrink`}>
             {item.title}
@@ -94,9 +85,7 @@ const tareasFiltradas = tasks.filter((t) =>
           </Text>
         </View>
         <Text style={tw`${isDark ? 'text-gray-300' : 'text-gray-800'}`}>{item.description}</Text>
-        {/* Línea de prioridad y fecha de entrega */}
         <View style={tw`flex-row justify-between items-center mt-3`}>
-          {/* Prioridad */}
           <View
             style={tw`px-3 py-1 rounded-full ${
               item.priority === 1
@@ -118,7 +107,6 @@ const tareasFiltradas = tasks.filter((t) =>
               {prioridadToLabel(item.priority)}
             </Text>
           </View>
-          {/* Fecha de entrega */}
           <Text
             style={tw`text-xs font-bold ${isDark ? 'text-blue-300' : 'text-blue-700'}`}
           >
@@ -131,21 +119,18 @@ const tareasFiltradas = tasks.filter((t) =>
     </Swipeable>
   );
 
-  // Convierte prioridad a número para la API (baja=3, media=2, alta=1)
   const prioridadToInt = (p) => (p === 'baja' ? 3 : p === 'media' ? 2 : 1);
-  // Convierte número a string para prioridad
   const prioridadFromInt = (n) =>
     n === 1 ? 'alta' : n === 2 ? 'media' : 'baja';
 
   const handleOrdenarPorAPI = async () => {
   setOrdenando(true);
   try {
-    // Prepara las tareas para la API
     const tareasParaAPI = tasks.map(t => ({
       id: t.id,
       fecha_de_creacion: t.createdAt ? t.createdAt.split('T')[0] : '',
       titulo: t.title,
-      prioridad: t.priority, // Usar el número directamente
+      prioridad: t.priority,
       fecha_de_entrega: t.dueDate ? t.dueDate.split('T')[0] : '',
     }));
 
@@ -153,7 +138,6 @@ const tareasFiltradas = tasks.filter((t) =>
       headers: { 'Content-Type': 'application/json' }
     });
 
-    // Actualizar el estado directamente con la respuesta de la API
     setTasks(res.data.map(apiTarea => {
       const original = tasks.find(t => t.id === apiTarea.id);
       return {

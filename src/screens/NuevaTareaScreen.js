@@ -27,16 +27,15 @@ export default function NuevaTareaScreen() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState(2);
-  const [dueDate, setDueDate] = useState(null); // Cambia a null y guarda como Date
+  const [dueDate, setDueDate] = useState(null); 
   const [showCalendar, setShowCalendar] = useState(false);
 
-  // Helper para convertir string a número
   const prioridadToInt = (p) => (p === 'alta' ? 1 : p === 'media' ? 2 : 3);
 
   const onChangeDate = (event, selectedDate) => {
     setShowCalendar(false);
     if (selectedDate) {
-      setDueDate(selectedDate); // Guarda como Date
+      setDueDate(selectedDate); 
     }
   };
 
@@ -50,10 +49,10 @@ export default function NuevaTareaScreen() {
       id: Date.now(),
       title,
       description,
-      priority: priority, // número
+      priority: priority, 
       completed: false,
       createdAt: new Date().toISOString(),
-      dueDate: dueDate ? dueDate.toISOString() : '', // Convierte a ISO solo al guardar
+      dueDate: dueDate ? dueDate.toISOString() : '', 
     };
 
     addTask(nuevaTarea);
