@@ -169,7 +169,7 @@ const tareasFiltradas = tasks.filter((t) =>
       <View style={tw`flex-row justify-between px-4 mb-2 w-full`}>
         <TouchableOpacity
           style={[
-            tw`flex-1 mr-28 p-3 rounded-full items-center`,
+            tw`flex-1 mr-28 p-3 w-fit rounded-full items-center`,
             { backgroundColor: '#2563eb' }
           ]}
           onPress={handleOrdenarPorAPI}
@@ -181,7 +181,7 @@ const tareasFiltradas = tasks.filter((t) =>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            tw`flex-1 ml-28 p-3 rounded-full items-center`,
+            tw`flex-1 w-fit ml-28 p-3 rounded-full items-center`,
             { backgroundColor: '#f59e42' }
           ]}
           onPress={() => setMostrarFiltros(!mostrarFiltros)}
