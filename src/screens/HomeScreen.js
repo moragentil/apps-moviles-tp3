@@ -9,9 +9,10 @@ import ThemeSwitch from '../components/ThemeSwitch';
 import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import LogoutButton from '../components/LogoutButton';
+import axios from 'axios';
 
 export default function HomeScreen() {
-  const { tasks, deleteTask, updateTask } = useContext(TaskContext);
+  const { tasks, deleteTask, updateTask, setTasks } = useContext(TaskContext);
   const { activeTheme } = useContext(ThemeContext);
   const navigation = useNavigation();
 
@@ -23,12 +24,21 @@ export default function HomeScreen() {
   const [filtroPrioridad, setFiltroPrioridad] = useState('todas');
   // Mostrar/ocultar filtros
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  // Estado para ordenar tareas
+  const [ordenando, setOrdenando] = useState(false);
 
-  // Filtra tareas según el tab y la prioridad
-  const tareasFiltradas = tasks.filter((t) =>
-    (tab === 'pendientes' ? !t.completed : t.completed) &&
-    (filtroPrioridad === 'todas' ? true : t.priority === filtroPrioridad)
-  );
+  // Ordena tareas por prioridad: alta (1), media (2), baja (3)
+  const prioridadOrden = { alta: 1, media: 2, baja: 3 };
+ // Eliminar toda la lógica de sort en tareasFiltradas
+const tareasFiltradas = tasks.filter((t) =>
+  (tab === 'pendientes' ? !t.completed : t.completed) &&
+  (filtroPrioridad === 'todas' ? true 
+  : t.priority === (filtroPrioridad === 'alta' 
+      ? 1 
+      : filtroPrioridad === 'media' 
+        ? 2 
+        : 3))
+);
 
   const handleDelete = (id) => {
     Alert.alert(
@@ -84,42 +94,81 @@ export default function HomeScreen() {
           </Text>
         </View>
         <Text style={tw`${isDark ? 'text-gray-300' : 'text-gray-800'}`}>{item.description}</Text>
-        {/* Línea de prioridad y estado */}
+        {/* Línea de prioridad y fecha de entrega */}
         <View style={tw`flex-row justify-between items-center mt-3`}>
           {/* Prioridad */}
           <View
             style={tw`px-3 py-1 rounded-full ${
-              item.priority === 'alta'
+              item.priority === 1
                 ? 'bg-red-200'
-                : item.priority === 'media'
+                : item.priority === 2
                 ? 'bg-yellow-200'
                 : 'bg-green-200'
             }`}
           >
             <Text
               style={tw`text-xs font-bold ${
-                item.priority === 'alta'
+                item.priority === 1
                   ? 'text-red-700'
-                  : item.priority === 'media'
+                  : item.priority === 2
                   ? 'text-yellow-700'
                   : 'text-green-700'
               }`}
             >
-              {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}
+              {prioridadToLabel(item.priority)}
             </Text>
           </View>
-          {/* Estado */}
+          {/* Fecha de entrega */}
           <Text
-            style={tw`text-xs font-bold ${
-              item.completed ? 'text-green-600' : 'text-red-600'
-            }`}
+            style={tw`text-xs font-bold ${isDark ? 'text-blue-300' : 'text-blue-700'}`}
           >
-            {item.completed ? 'Completada' : 'Pendiente'}
+            {item.dueDate
+              ? `Entrega: ${new Date(item.dueDate).toLocaleDateString()}`
+              : 'Sin entrega'}
           </Text>
         </View>
       </TouchableOpacity>
     </Swipeable>
   );
+
+  // Convierte prioridad a número para la API (baja=3, media=2, alta=1)
+  const prioridadToInt = (p) => (p === 'baja' ? 3 : p === 'media' ? 2 : 1);
+  // Convierte número a string para prioridad
+  const prioridadFromInt = (n) =>
+    n === 1 ? 'alta' : n === 2 ? 'media' : 'baja';
+
+  const handleOrdenarPorAPI = async () => {
+  setOrdenando(true);
+  try {
+    // Prepara las tareas para la API
+    const tareasParaAPI = tasks.map(t => ({
+      id: t.id,
+      fecha_de_creacion: t.createdAt ? t.createdAt.split('T')[0] : '',
+      titulo: t.title,
+      prioridad: t.priority, // Usar el número directamente
+      fecha_de_entrega: t.dueDate ? t.dueDate.split('T')[0] : '',
+    }));
+
+    const res = await axios.post('https://api-app-moviles.onrender.com/ordenar-tareas/', tareasParaAPI, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    // Actualizar el estado directamente con la respuesta de la API
+    setTasks(res.data.map(apiTarea => {
+      const original = tasks.find(t => t.id === apiTarea.id);
+      return {
+        ...original,
+        priority: apiTarea.prioridad,
+        dueDate: apiTarea.fecha_de_entrega
+          ? new Date(apiTarea.fecha_de_entrega).toISOString()
+          : original?.dueDate || '',
+      };
+    }));
+  } catch (e) {
+    Alert.alert('Error', 'No se pudo ordenar con la API');
+  }
+  setOrdenando(false);
+};
 
   return (
     <View style={tw`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -235,6 +284,19 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Botón ordenar por API */}
+      <View style={tw`px-4 mb-2`}>
+        <TouchableOpacity
+          style={tw`bg-blue-600 p-3 rounded-full items-center mb-2`}
+          onPress={handleOrdenarPorAPI}
+          disabled={ordenando}
+        >
+          <Text style={tw`text-white font-bold`}>
+            {ordenando ? 'Ordenando...' : 'Ordenar por API'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Lista de Tareas */}
       <FlatList
         data={tareasFiltradas}
@@ -260,3 +322,7 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+// Helper para mostrar la prioridad como palabra
+const prioridadToLabel = (n) =>
+  n === 1 ? 'Alta' : n === 2 ? 'Media' : 'Baja';

@@ -18,14 +18,14 @@ export function TaskProvider({ children }) {
     AsyncStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = (task) => setTasks(prev => [task, ...prev]);
+  const addTask = (task) => setTasks(prev => [...prev, task]);
   const updateTask = (updated) =>
     setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
   const deleteTask = (id) =>
     setTasks(prev => prev.filter(t => t.id !== id));
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask, setTasks }}>
       {children}
     </TaskContext.Provider>
   );

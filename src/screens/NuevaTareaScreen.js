@@ -26,9 +26,12 @@ export default function NuevaTareaScreen() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState('media');
+  const [priority, setPriority] = useState(2);
   const [dueDate, setDueDate] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
+
+  // Helper para convertir string a número
+  const prioridadToInt = (p) => (p === 'alta' ? 1 : p === 'media' ? 2 : 3);
 
   const handleGuardar = () => {
     if (!title.trim()) {
@@ -40,7 +43,7 @@ export default function NuevaTareaScreen() {
       id: Date.now(),
       title,
       description,
-      priority,
+      priority: priority, // <-- Guarda como número
       completed: false,
       createdAt: new Date().toISOString(),
       dueDate: dueDate ? new Date(dueDate).toISOString() : '',
@@ -51,10 +54,10 @@ export default function NuevaTareaScreen() {
   };
 
   const priorityOptions = [
-    { label: 'Baja', value: 'baja', color: 'bg-green-400' },
-    { label: 'Media', value: 'media', color: 'bg-yellow-400' },
-    { label: 'Alta', value: 'alta', color: 'bg-red-400' },
-  ];
+  { label: 'Baja', value: 3, color: 'bg-green-400' },
+  { label: 'Media', value: 2, color: 'bg-yellow-400' },
+  { label: 'Alta', value: 1, color: 'bg-red-400' },
+];
 
   const onChangeDate = (event, selectedDate) => {
     setShowCalendar(false);
