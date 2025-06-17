@@ -181,26 +181,29 @@ const tareasFiltradas = tasks.filter((t) =>
         <LogoutButton />
       </View>
 
-      {/* Botón aplicar filtros */}
-      <View style={tw`px-4 mb-2`}>
+      {/* Botones de ordenar y filtros */}
+      <View style={tw`flex-row justify-between px-4 mb-2 w-full`}>
         <TouchableOpacity
           style={[
-            tw`self-end px-4 py-2 rounded-full shadow-md`,
-            { backgroundColor: 'transparent' },
+            tw`flex-1 mr-28 p-3 rounded-full items-center`,
+            { backgroundColor: '#2563eb' }
+          ]}
+          onPress={handleOrdenarPorAPI}
+          disabled={ordenando}
+        >
+          <Text style={tw`text-white font-bold`}>
+            <Ionicons name="swap-vertical-outline" size={20} color="white" />
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            tw`flex-1 ml-28 p-3 rounded-full items-center`,
+            { backgroundColor: '#f59e42' }
           ]}
           onPress={() => setMostrarFiltros(!mostrarFiltros)}
         >
-          <View
-            style={{
-              ...tw`absolute left-0 right-0 top-0 bottom-0 rounded-full`,
-              background: 'linear-gradient(90deg, #f59e42 0%, #f43f5e 100%)',
-              backgroundColor: '#f59e42',
-              opacity: 0.95,
-              zIndex: -1,
-            }}
-          />
-          <Text style={tw`text-white font-semibold z-10`}>
-            <Ionicons name="funnel" size={20} color="#fff" />
+          <Text style={tw`text-white font-bold`}>
+            <Ionicons name="funnel" size={20} color="white" />
           </Text>
         </TouchableOpacity>
       </View>
@@ -284,18 +287,6 @@ const tareasFiltradas = tasks.filter((t) =>
         </TouchableOpacity>
       </View>
 
-      {/* Botón ordenar por API */}
-      <View style={tw`px-4 mb-2`}>
-        <TouchableOpacity
-          style={tw`bg-blue-600 p-3 rounded-full items-center mb-2`}
-          onPress={handleOrdenarPorAPI}
-          disabled={ordenando}
-        >
-          <Text style={tw`text-white font-bold`}>
-            {ordenando ? 'Ordenando...' : 'Ordenar por API'}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Lista de Tareas */}
       <FlatList
